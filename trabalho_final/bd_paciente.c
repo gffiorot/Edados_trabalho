@@ -25,10 +25,10 @@ int gerarNovoIdPaciente(BDPaciente *bd) {
     Paciente *atual = bd->inicio;
     while (atual != NULL) {
         if (atual->id > maxId)
-            maxId = atual->id; 
-        atual = atual->proximo;
+            maxId = atual->id; // Encontra o elemento (paciente) com maior ID (adicionado por último)
+        atual = atual->proximo; 
     }
-    return maxId + 1;
+    return maxId + 1; // Retorna o ID disponível para ser usado pelo novo suposto elemento (novo paciente)
 }
 
 void inserirPaciente(BDPaciente *bd, Paciente *novoPaciente) {
@@ -46,8 +46,8 @@ void inserirPaciente(BDPaciente *bd, Paciente *novoPaciente) {
 Paciente* buscarPacientePorId(BDPaciente *bd, int id) {
     Paciente *atual = bd->inicio;
     while (atual != NULL) {
-        if (atual->id == id)
-            return atual;
+        if (atual->id == id) // Encontra o ID fornecido
+            return atual; // Retorna os dados do paciente com o ID fornecido
         atual = atual->proximo;
     }
     return NULL;
@@ -71,9 +71,9 @@ void removerPaciente(BDPaciente *bd, int id) {
 }
 
 void exibirListaPacientes(BDPaciente *bd) { // Exibe na tela todos os pacientes em formato de 'tabela'
-    printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
+    printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro"); // Cabeçalho da tabela
     Paciente *atual = bd->inicio;
-    while (atual != NULL) {
+    while (atual != NULL) { // Percorre os pacientes da lista, imprimindo seus dados
         printf("%-4d | %-14s | %-15s | %-6d | %-s\n",
                atual->id, atual->cpf, atual->nome, atual->idade, atual->dataCadastro);
         atual = atual->proximo;

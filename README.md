@@ -20,7 +20,9 @@ Deve-se ter um compilador C, além de um ambiente para execução em sistema Lin
 
 # 3. Como Executar o Programa
 1. Todos os arquivos fonte devem estar na mesma pasta: main.c, arquivo.c, interface_usuario.c, bd_paciente.c, arquivo.h, interface_usuario.h, bd_paciente.h.
-2. Considerando a presença do Makefile na pasta, digite no terminal a palavra “make” e execute o projeto.
+2. Considerando a presença do Makefile na pasta, digite no terminal a palavra “make” e execute o projeto teclando enter.
+3. A partir do comando dito anteriormente, o programa será executado. Deve-se seguir as instruções na tela de Menu para inserir as informações de um paciente, consultar, atualizar, remover ou imprimir a lista completa dos pacientes presentes no banco de dados.
+4. Caso queira sair do programa, deve-se escolher a opção 'Q' OU 'q' (como está presente no Menu), o que acionará o salvamento dos dados, encerrando o programa logo em seguida."
 
 # 4 Estrutura do Projeto 
 

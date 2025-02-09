@@ -15,6 +15,7 @@ int main(void) {
         mostrarMenuPrincipal();
         scanf(" %c", &opcao);
         getchar();
+        printf("\n");
 
         // Caso o usuário opte por sair, realiza o salvamento e encerra o programa
         if (opcao == 'Q' || opcao == 'q') {

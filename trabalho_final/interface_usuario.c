@@ -5,14 +5,14 @@
 #include "interface_usuario.h"
 
 void mostrarMenuPrincipal() {
-    printf("\n============= SISTEMA DE GERENCIAMENTO DE PACIENTES ============\n");
+    printf("\n=============== SISTEMA DE GERENCIAMENTO DE PACIENTES ===============\n");
     printf("[1] Inserir paciente\n");
     printf("[2] Consultar paciente\n");
     printf("[3] Atualizar paciente\n");
     printf("[4] Remover paciente\n");
     printf("[5] Imprimir lista de pacientes\n");
     printf("[Q] Sair\n");
-    printf("================================================================\n");
+    printf("=====================================================================\n");
     printf("Digite a opção desejada: ");
 }
 
@@ -131,8 +131,8 @@ void processarInsercaoPaciente(BDPaciente *bd) {
 
     // Confirmação se os dados estão corretos
     printf("Confirma os novos valores para o registro abaixo? (S/N)\n\n");
-    printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
-    printf("%-4d | %-14s | %-15s | %-6d | %-s\n",
+    printf("%-4s | %-14s | %-20s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
+    printf("%-4d | %-14s | %-20s | %-6d | %-s\n",
            novoPaciente->id, novoPaciente->cpf, novoPaciente->nome,
            novoPaciente->idade, novoPaciente->dataCadastro);
 
@@ -174,16 +174,18 @@ void processarConsultaPaciente(BDPaciente *bd) {
 
     fgets(busca, MAX_STR, stdin);
     busca[strcspn(busca, "\n")] = '\0';
+
+    // Se for CPF ele valida se esta escrito de forma correta antes de formatar
     if(opcao == 2 && strlen(busca) == 11 && int_apenas(busca))
         formatarCPF(busca,cpf_busca);
 
     Paciente *paciente = bd->inicio;
     int encontrados = 0;
-    printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
-    while(paciente) {
+    printf("%-4s | %-14s | %-20s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
+    while(paciente) { // Se for pesquisar por nome ele printa todos os nomes do csv que contem o nome pesquisado, porem só acha o cpf se ele for digitado inteiro
         if((opcao == 1 && strcasestr(paciente->nome, busca)) ||
            (opcao == 2 && !strcasecmp(paciente->cpf, cpf_busca))) {
-            printf("%-4d | %-14s | %-15s | %-6d | %-s\n",
+            printf("%-4d | %-14s | %-20s | %-6d | %-s\n",
                    paciente->id, paciente->cpf, paciente->nome, paciente->idade, paciente->dataCadastro);
             encontrados++;
         }
@@ -258,8 +260,8 @@ void processarAtualizacaoPaciente(BDPaciente *bd) {
 
 
     printf("Confirma a atualização? (S/N)\n");
-    printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
-    printf("%-4d | %-14s | %-15s | %-6s | %-s\n", paciente->id, novoCPF, novoNome, novaIdadeStr, novaData);
+    printf("%-4s | %-14s | %-20s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
+    printf("%-4d | %-14s | %-20s | %-6s | %-s\n", paciente->id, novoCPF, novoNome, novaIdadeStr, novaData);
 
     char resp;
     scanf(" %c", &resp);
@@ -294,8 +296,8 @@ void processarRemocaoPaciente(BDPaciente *bd) {
     }
 
     printf("Confirma a remoção do paciente abaixo? (S/N)\n");
-    printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
-    printf("%-4d | %-14s | %-15s | %-6d | %-s\n",
+    printf("%-4s | %-14s | %-20s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
+    printf("%-4d | %-14s | %-20s | %-6d | %-s\n",
            paciente->id, paciente->cpf, paciente->nome,
            paciente->idade, paciente->dataCadastro);
 

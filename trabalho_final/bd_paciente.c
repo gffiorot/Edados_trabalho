@@ -20,6 +20,7 @@ Paciente* criarPaciente(int id, const char *cpf, const char *nome, int idade, co
     return paciente;
 }
 
+
 int gerarNovoIdPaciente(BDPaciente *bd) {
     int maxId = 0;
     Paciente *atual = bd->inicio;
@@ -71,10 +72,11 @@ void removerPaciente(BDPaciente *bd, int id) {
 }
 
 void exibirListaPacientes(BDPaciente *bd) { // Exibe na tela todos os pacientes em formato de 'tabela'
-    printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro"); // Cabeçalho da tabela
+    printf("Imprimindo lista de pacientes...\n\n");
+    printf("%-4s | %-14s | %-20s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro"); // Cabeçalho da tabela
     Paciente *atual = bd->inicio;
     while (atual != NULL) { // Percorre os pacientes da lista, imprimindo seus dados
-        printf("%-4d | %-14s | %-15s | %-6d | %-s\n",
+        printf("%-4d | %-14s | %-20s | %-6d | %-s\n",
                atual->id, atual->cpf, atual->nome, atual->idade, atual->dataCadastro);
         atual = atual->proximo;
     }

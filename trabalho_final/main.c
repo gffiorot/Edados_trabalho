@@ -5,24 +5,25 @@
 
 int main(void) {
     BDPaciente bd;
-    char op;
+    char opcao;
 
+    // Prepara o banco de dados
     iniciarBancoDadosPacientes(&bd);
     carregarDadosPacientes(&bd, "bd_paciente.csv");
 
     while (1) {
         mostrarMenuPrincipal();
-        scanf(" %c", &op);
+        scanf(" %c", &opcao);
         getchar();
 
-        // Caso o usuário opte por sair, realiza o salvamento e encerra o laço
-        if (op == 'Q' || op == 'q') {
+        // Caso o usuário opte por sair, realiza o salvamento e encerra o programa
+        if (opcao == 'Q' || opcao == 'q') {
             printf("Saindo do sistema...\n");
             salvarDadosPacientes(&bd, "bd_paciente.csv");
             break;
         }
 
-        switch (op) {
+        switch (opcao) {
             case '1':
                 processarInsercaoPaciente(&bd);
                 break;
@@ -43,11 +44,9 @@ int main(void) {
         }
 
         // Salva os dados se a operação alterar o banco de dados
-        if(op == '1' || op == '3' || op == '4')
+        if(opcao == '1' || opcao == '3' || opcao == '4')
             salvarDadosPacientes(&bd, "bd_paciente.csv");
     }
 
     return 0;
 }
-
-// ja modificado

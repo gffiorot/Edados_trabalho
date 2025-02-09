@@ -155,7 +155,7 @@ void processarInsercaoPaciente(BDPaciente *bd) {
 
 void processarConsultaPaciente(BDPaciente *bd) {
     int opcao;
-    char busca[MAX_STR];
+    char busca[MAX_STR], cpf_busca[MAX_STR];
 
     printf("Modo de consulta:\n1 - Por Nome\n2 - Por CPF\n3 - Voltar\n");
     printf("Escolha uma opção: ");
@@ -166,7 +166,7 @@ void processarConsultaPaciente(BDPaciente *bd) {
     if(opcao == 1)
         printf("Digite o nome: ");
     else if(opcao == 2)
-        printf("Digite o CPF: ");
+        printf("Digite o CPF completo (apenas números): ");
     else {
         printf("Opção inválida.\n");
         return;
@@ -174,18 +174,20 @@ void processarConsultaPaciente(BDPaciente *bd) {
 
     fgets(busca, MAX_STR, stdin);
     busca[strcspn(busca, "\n")] = '\0';
+    if(opcao == 2 && strlen(busca) == 11 && int_apenas(busca))
+        formatarCPF(busca,cpf_busca);
 
-    Paciente *ptr = bd->inicio;
+    Paciente *paciente = bd->inicio;
     int encontrados = 0;
-    while(ptr) {
-        if((opcao == 1 && strcasecmp(ptr->nome, busca) == 0) ||
-           (opcao == 2 && strcasecmp(ptr->cpf, busca) == 0)) {
-            printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
+    printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
+    while(paciente) {
+        if((opcao == 1 && strcasestr(paciente->nome, busca)) ||
+           (opcao == 2 && !strcasecmp(paciente->cpf, cpf_busca))) {
             printf("%-4d | %-14s | %-15s | %-6d | %-s\n",
-                   ptr->id, ptr->cpf, ptr->nome, ptr->idade, ptr->dataCadastro);
+                   paciente->id, paciente->cpf, paciente->nome, paciente->idade, paciente->dataCadastro);
             encontrados++;
         }
-        ptr = ptr->proximo;
+        paciente = paciente->proximo;
     }
     if(encontrados == 0)
         printf("Nenhum paciente encontrado.\n");

@@ -24,7 +24,7 @@ Deve-se ter um compilador C, além de um ambiente para execução em sistema Lin
 3. A partir do comando dito anteriormente, o programa será executado. Deve-se seguir as instruções na tela de Menu para inserir as informações de um paciente, bem como consultar, atualizar, remover ou imprimir a lista completa dos pacientes presentes no banco de dados.
 4. Caso queira sair do programa, deve-se escolher a opção 'Q' OU 'q' (como está presente no Menu), o que acionará o salvamento dos dados, encerrando o programa logo em seguida."
 
-# 4 Estrutura do Projeto 
+# 4. Estrutura do Projeto 
 
 O projeto está organizado de forma modular, com cada módulo responsável por uma parte específica da funcionalidade: 
 
@@ -34,7 +34,7 @@ O projeto está organizado de forma modular, com cada módulo responsável por u
 - **interface_usuario.c / interface_usuario.h:** Gerencia a interface com o usuário, apresentando o menu e tratando as entradas (incluindo validações de CPF, data e idade). 
 - **Makefile**: utilizado principalmente para a criação de um executável através do comando make 
 
-# 5 Principais TADs 
+# 5. Principais TADs 
 
 O sistema utiliza dois tipos principais para a gestão dos dados: 
 
@@ -50,7 +50,7 @@ O sistema utiliza dois tipos principais para a gestão dos dados:
 - **BDPaciente:**   
   Estrutura que armazena a lista encadeada de pacientes. Contém apenas o ponteiro para o início da lista, permitindo fácil manipulação dos registros com operações de inserção, remoção e busca.
 
-# 6 Principais Decisões de Implementação 
+# 6. Principais Decisões de Implementação 
 
 - **Modularização do Código:**   
   A separação do código em módulos (arquivo, bd, interface) promove a organização, facilita a manutenção e possibilita a reutilização ou expansão do sistema. 

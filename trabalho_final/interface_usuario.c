@@ -5,14 +5,14 @@
 #include "interface_usuario.h"
 
 void mostrarMenuPrincipal() {
-    printf("\n========== SISTEMA DE GERENCIAMENTO DE PACIENTES ==========\n");
+    printf("\n============= SISTEMA DE GERENCIAMENTO DE PACIENTES ============\n");
     printf("[1] Inserir paciente\n");
     printf("[2] Consultar paciente\n");
     printf("[3] Atualizar paciente\n");
     printf("[4] Remover paciente\n");
     printf("[5] Imprimir lista de pacientes\n");
     printf("[Q] Sair\n");
-    printf("=============================================================\n");
+    printf("================================================================\n");
     printf("Digite a opção desejada: ");
 }
 
@@ -28,39 +28,79 @@ int int_apenas(const char *string){
 }
 
 
-/*
-char formatarCPF(const char *cpfEntrada) {
+void formatarCPF(const char *cpfEntrada, char *cpfFormatado) {
     int i, j = 0; // i percorre cpfEntrada, j percorre cpfFormatado
-    char cpfFormatado;
+
     for (i = 0; i < 11; i++) {
         cpfFormatado[j++] = cpfEntrada[i];
 
-        // Insere os separadores nos locais corretos
+        // Insere os separadores nos locais corretos e proguide o cpfFormatado apenas
         if (i == 2 || i == 5) {
             cpfFormatado[j++] = '.';
         } else if (i == 8) {
             cpfFormatado[j++] = '-';
         }
     }
+
     cpfFormatado[j] = '\0'; // Finaliza a string corretamente
+}
 
-    return cpfFormatado;
-}*/
+// Serve para validar se a data foi digitada corretamente           obs: não valida se o mes é maior que 12 ou se o dia também é alem do maximo
+int validar_data(const char *data)
+{   
+    int i;
+    while(*data)
+    {   // testando se o ano é formado por numeros
+        for (i=0 ;i<4 ;i++){
+            if (!isdigit(*data))
+                return 0;
+            data++;
+        }
+        // Testando se tem um traço entre o ano e o mes
+        if (*data != '-')
+            return 0;
+        data++;
 
+        // testando se o mês é formado por numeros
+        for (i=0;i<2;i++){
+            if (!isdigit(*data))
+                return 0;
+            data++;
+        }
+        // Testando se tem um traço entre o mes e o dia
+        if (*data != '-')
+            return 0;
+        data++;
+        
+        // testando se o dia é formado por numeros
+        for (i=0;i<2;i++){
+            if (!isdigit(*data))
+                return 0;
+            else
+                data++;
+        }
+    
+        if (*data != '\0')
+            return 0;
+    }
+    return 1;
+
+}
 
 void processarInsercaoPaciente(BDPaciente *bd) {
-    char cpf[MAX_STR], nome[MAX_STR], data[MAX_STR];
+    char cpf_inicial[MAX_STR], cpf[MAX_STR], nome[MAX_STR], data[MAX_STR];
     int idade;
 
     printf("Digite o CPF (11 números apenas): ");
 
-    scanf("%s", cpf);
+    scanf("%s", cpf_inicial);
     // Validação do cpf
-    while (strlen(cpf) != 11 || !int_apenas(cpf)){
+    while (strlen(cpf_inicial) != 11 || !int_apenas(cpf_inicial)){
         printf("CPF invalido digite 11 números: ");
-        scanf("%s", cpf);
+        scanf("%s", cpf_inicial);
     }
     getchar();
+    formatarCPF(cpf_inicial,cpf);
 
     printf("Digite o nome: ");
     fgets(nome, MAX_STR, stdin);
@@ -70,12 +110,19 @@ void processarInsercaoPaciente(BDPaciente *bd) {
     scanf("%d", &idade);
     //Validação da idade
     while (idade<0){
-        printf("Idade não pode ser negativo tente novamente ");
+        printf("Idade não pode ser negativo tente novamente: ");
         scanf("%d", &idade);
     }
 
-    printf("Digite a data de cadastro (exemplo: 2022-08-24): ");
+    printf("Digite a data de cadastro (AAAA-MM-DD): ");
     scanf("%s", data);
+    //Validação da data
+    while (!validar_data(data)){
+        printf("Data invalida tente novamente (AAAA-MM-DD): ");
+        scanf("%s", data);
+    }
+    getchar();
+
 
     int novoID = gerarNovoIdPaciente(bd);
     Paciente *novoPaciente = criarPaciente(novoID, cpf, nome, idade, data);
@@ -149,33 +196,53 @@ void processarAtualizacaoPaciente(BDPaciente *bd) {
         return;
     }
 
-    char novoCPF[MAX_STR], novoNome[MAX_STR], novaIdadeStr[MAX_STR], novaData[MAX_STR];
+    char novoCPF[MAX_STR],novoCPF_inicial[MAX_STR], novoNome[MAX_STR], novaIdadeStr[MAX_STR], novaData[MAX_STR];
     printf("Digite os novos valores (ou '_' para manter o atual):\n");
 
     printf("CPF: ");
-    scanf("%s", novoCPF);
+    scanf("%s", novoCPF_inicial);
+    //Validação do CPF
+    if(strcmp(novoCPF_inicial, "_"))
+    {
+        while (strlen(novoCPF_inicial) != 11 || !int_apenas(novoCPF_inicial)){
+            printf("CPF invalido digite 11 números: ");
+            scanf("%s", novoCPF_inicial);
+        }
+        formatarCPF(novoCPF_inicial, novoCPF);
+        strcpy(paciente->cpf, novoCPF);
+    }
+    getchar();
 
     printf("Nome: ");
     scanf("%s", novoNome);
+    if(strcmp(novoNome, "_"))
+        strcpy(paciente->nome, novoNome);
 
+   
     printf("Idade: ");
     scanf("%s", novaIdadeStr);
-    while (novaIdadeStr<0){
-        printf("Idade não pode ser negativo tente novamente ");
-        scanf("%s", novaIdadeStr);
+     //Validação da idade
+    if(strcmp(novaIdadeStr, "_")){
+        while (novaIdadeStr[0]=='-'){
+            printf("Idade não pode ser negativo tente novamente: ");
+            scanf("%s", novaIdadeStr);
+        }
+        paciente->idade = atoi(novaIdadeStr);
     }
-    printf("Data (AAAA-MM-DD): ");
+
+    
+    printf("Digite a data de cadastro (AAAA-MM-DD): ");
     scanf("%s", novaData);
+    //Validação da Data
+    if(strcmp(novaData, "_") ){
+        while (!validar_data(novaData)){
+            printf("Data invalida tente novamente (AAAA-MM-DD): ");
+            scanf("%s", novaData);
+        }
+        strcpy(paciente->dataCadastro, novaData);
+    }
     getchar();
 
-    if(strcmp(novoCPF, "_") != 0)
-        strcpy(paciente->cpf, novoCPF);
-    if(strcmp(novoNome, "_") != 0)
-        strcpy(paciente->nome, novoNome);
-    if(strcmp(novaIdadeStr, "_") != 0)
-        paciente->idade = atoi(novaIdadeStr);
-    if(strcmp(novaData, "_") != 0)
-        strcpy(paciente->dataCadastro, novaData);
 
     printf("Confirma a atualização? (S/N)\n");
     printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");

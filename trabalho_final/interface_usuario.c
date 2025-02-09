@@ -18,10 +18,11 @@ void mostrarMenuPrincipal() {
 
 int int_apenas(const char *string){
     while (*string){
+        // Verifica se o caracter que o ponteiro aponta é um numero, se não retorna 0
         if (!isdigit(*string))
             return 0;
 
-        // vai para o proximo caracter da string
+        // ponteiro segue para o proximo caracter da string
         string++;
     }
     return 1;
@@ -34,8 +35,8 @@ void formatarCPF(const char *cpfEntrada, char *cpfFormatado) {
     for (i = 0; i < 11; i++) {
         cpfFormatado[j++] = cpfEntrada[i];
 
-        // Insere os separadores nos locais corretos e proguide o cpfFormatado apenas
-        if (i == 2 || i == 5) {
+        // Insere os separadores nos locais corretos e proguide o apenas cpfFormatado
+         if (i == 2 || i == 5) {
             cpfFormatado[j++] = '.';
         } else if (i == 8) {
             cpfFormatado[j++] = '-';
@@ -45,7 +46,6 @@ void formatarCPF(const char *cpfEntrada, char *cpfFormatado) {
     cpfFormatado[j] = '\0'; // Finaliza a string corretamente
 }
 
-// Serve para validar se a data foi digitada corretamente           obs: não valida se o mes é maior que 12 ou se o dia também é alem do maximo
 int validar_data(const char *data)
 {   
     int i;
@@ -80,6 +80,7 @@ int validar_data(const char *data)
                 data++;
         }
     
+        // Testa se ja chegou no fim da string
         if (*data != '\0')
             return 0;
     }
@@ -102,6 +103,7 @@ void processarInsercaoPaciente(BDPaciente *bd) {
     getchar();
     formatarCPF(cpf_inicial,cpf);
 
+    // Nome não precisa de validação uma vez que qualquer coisa pode ser um nome
     printf("Digite o nome: ");
     fgets(nome, MAX_STR, stdin);
     nome[strcspn(nome, "\n")] = '\0';
@@ -123,10 +125,11 @@ void processarInsercaoPaciente(BDPaciente *bd) {
     }
     getchar();
 
-
+    // Da um ID ao novo paciente e fornece todos os dados
     int novoID = gerarNovoIdPaciente(bd);
     Paciente *novoPaciente = criarPaciente(novoID, cpf, nome, idade, data);
 
+    // Confirmação se os dados estão corretos
     printf("Confirma os novos valores para o registro abaixo? (S/N)\n\n");
     printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
     printf("%-4d | %-14s | %-15s | %-6d | %-s\n",
@@ -136,14 +139,18 @@ void processarInsercaoPaciente(BDPaciente *bd) {
     char resp;
     scanf(" %c", &resp);
     getchar();
-
+    
+    while (resp != 'S' && resp!= 's' && resp!='N' && resp!='n'){
+        printf("Opção invalida tente novamente (S/N): ");
+        scanf(" %c", &resp);
+    }
     if(resp == 'S' || resp == 's') {
         inserirPaciente(bd, novoPaciente);
         printf("Paciente inserido com sucesso.\n");
     } else {
         free(novoPaciente);
         printf("Inserção cancelada.\n");
-    }
+    } 
 }
 
 void processarConsultaPaciente(BDPaciente *bd) {
@@ -209,16 +216,18 @@ void processarAtualizacaoPaciente(BDPaciente *bd) {
             scanf("%s", novoCPF_inicial);
         }
         formatarCPF(novoCPF_inicial, novoCPF);
-        strcpy(paciente->cpf, novoCPF);
+    } else{ // caso o usuario digite "_" o 'novo dado' cadastrado sera o que ja esta no campo de dados para facilitação de atualização
+        strcpy(novoCPF, paciente->cpf);
     }
     getchar();
 
     printf("Nome: ");
-    scanf("%s", novoNome);
-    if(strcmp(novoNome, "_"))
-        strcpy(paciente->nome, novoNome);
+    fgets(novoNome, MAX_STR, stdin);
+    novoNome[strcspn(novoNome, "\n")] = '\0';
+    if (!strcmp(novoNome, "_")) // caso o usuario digite "_" o 'novo dado' cadastrado sera o que ja esta no campo de dados para facilitação de atualização
+        strcpy(novoNome, paciente->nome);
+    
 
-   
     printf("Idade: ");
     scanf("%s", novaIdadeStr);
      //Validação da idade
@@ -227,7 +236,8 @@ void processarAtualizacaoPaciente(BDPaciente *bd) {
             printf("Idade não pode ser negativo tente novamente: ");
             scanf("%s", novaIdadeStr);
         }
-        paciente->idade = atoi(novaIdadeStr);
+    } else { // caso o usuario digite "_" o 'novo dado' cadastrado sera o que ja esta no campo de dados para facilitação de atualização
+        sprintf(novaIdadeStr, "%d", paciente->idade);
     }
 
     
@@ -239,22 +249,31 @@ void processarAtualizacaoPaciente(BDPaciente *bd) {
             printf("Data invalida tente novamente (AAAA-MM-DD): ");
             scanf("%s", novaData);
         }
-        strcpy(paciente->dataCadastro, novaData);
+    } else { // caso o usuario digite "_" o 'novo dado' cadastrado sera o que ja esta no campo de dados para facilitação de atualização
+        strcpy(novaData, paciente->dataCadastro);
     }
     getchar();
 
 
     printf("Confirma a atualização? (S/N)\n");
     printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
-    printf("%-4d | %-14s | %-15s | %-6d | %-s\n",
-           paciente->id, paciente->cpf, paciente->nome,
-           paciente->idade, paciente->dataCadastro);
+    printf("%-4d | %-14s | %-15s | %-6s | %-s\n", paciente->id, novoCPF, novoNome, novaIdadeStr, novaData);
 
     char resp;
     scanf(" %c", &resp);
     getchar();
-    if(resp == 'S' || resp == 's')
+    
+    while (resp != 'S' && resp!= 's' && resp!='N' && resp!='n'){
+        printf("Opção invalida tente novamente (S/N): ");
+        scanf(" %c", &resp);
+    }
+    if(resp == 'S' || resp == 's'){
         printf("Registro atualizado com sucesso.\n");
+        strcpy(paciente->cpf, novoCPF);
+        strcpy(paciente->nome, novoNome);
+        paciente->idade = atoi(novaIdadeStr);
+        strcpy(paciente->dataCadastro, novaData);
+    }
     else
         printf("Atualização cancelada.\n");
 }

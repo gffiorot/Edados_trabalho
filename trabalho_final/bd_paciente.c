@@ -9,13 +9,13 @@ void iniciarBancoDadosPacientes(BDPaciente *bd) {
 
 Paciente* criarPaciente(int id, const char *cpf, const char *nome, int idade, const char *dataCadastro) {
     Paciente *paciente = (Paciente*) malloc(sizeof(Paciente));
-    if (paciente) {
+    if (paciente != NULL) {
         paciente->id = id;
         strcpy(paciente->cpf, cpf);
         strcpy(paciente->nome, nome);
         paciente->idade = idade;
         strcpy(paciente->dataCadastro, dataCadastro);
-        paciente->proximo = NULL;
+        paciente->proximo = NULL; // Prepara o próximo nó a ser inserido, caso o usuário queira.
     }
     return paciente;
 }
@@ -23,29 +23,29 @@ Paciente* criarPaciente(int id, const char *cpf, const char *nome, int idade, co
 int gerarNovoIdPaciente(BDPaciente *bd) {
     int maxId = 0;
     Paciente *atual = bd->inicio;
-    while (atual) {
+    while (atual != NULL) {
         if (atual->id > maxId)
-            maxId = atual->id; // CORRIGIDO
+            maxId = atual->id; 
         atual = atual->proximo;
     }
     return maxId + 1;
 }
 
 void inserirPaciente(BDPaciente *bd, Paciente *novoPaciente) {
-    if (bd->inicio == NULL) {
+    if (bd->inicio == NULL) { // Se a lista estiver vazia..
         bd->inicio = novoPaciente;
     } else {
-        Paciente *atual = bd->inicio;
-        while (atual->proximo) {
+        Paciente *atual = bd->inicio; // Nó temporario para buscar um 'local' disponivel na lista para inserir o nó 'novoPaciente'.
+        while (atual->proximo != NULL) {
             atual = atual->proximo;
         }
-        atual->proximo = novoPaciente;
+        atual->proximo = novoPaciente; // Insere o novoPaciente no próximo nó disponível (vazio).
     }
 }
 
 Paciente* buscarPacientePorId(BDPaciente *bd, int id) {
     Paciente *atual = bd->inicio;
-    while (atual) {
+    while (atual != NULL) {
         if (atual->id == id)
             return atual;
         atual = atual->proximo;
@@ -56,25 +56,24 @@ Paciente* buscarPacientePorId(BDPaciente *bd, int id) {
 void removerPaciente(BDPaciente *bd, int id) {
     Paciente *atual = bd->inicio;
     Paciente *anterior = NULL;
-    while (atual) {
+    while (atual != NULL) {
         if (atual->id == id) {
-            if (anterior == NULL)
-                bd->inicio = atual->proximo;
+            if (anterior == NULL) // Caso o paciente for o primeiro da lista
+                bd->inicio = atual->proximo; // Atualiza a lista para o próximo nó/paciente
             else
                 anterior->proximo = atual->proximo;
-            free(atual);
-            return;
+            free(atual); // Libera memoria do paciente com o ID fornecido
+            return; // Como o paciente foi removido, termina a função
         }
         anterior = atual;
-        atual = atual->proximo;
+        atual = atual->proximo; 
     }
 }
 
-void exibirListaPacientes(BDPaciente *bd) {
-    //Print with correct format for spacing
+void exibirListaPacientes(BDPaciente *bd) { // Exibe na tela todos os pacientes em formato de 'tabela'
     printf("%-4s | %-14s | %-15s | %-6s | %-s\n", "ID","CPF","Nome","Idade","Data_Cadastro");
     Paciente *atual = bd->inicio;
-    while (atual) {
+    while (atual != NULL) {
         printf("%-4d | %-14s | %-15s | %-6d | %-s\n",
                atual->id, atual->cpf, atual->nome, atual->idade, atual->dataCadastro);
         atual = atual->proximo;

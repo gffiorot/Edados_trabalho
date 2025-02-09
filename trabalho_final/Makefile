@@ -1,30 +1,51 @@
+# Compiler
+CC = gcc
+
 # Flags do compilador
-CFLAGS = -Wall -g
+CFLAGS = -Wall
+
+# Source directory
+SRC_DIR = src
+
+# Header directory
+INC_DIR = include
+
+# Object directory
+OBJ_DIR = objs
+
+# Nome do executavel
+TARGET = sistema
+
+# Main file
+MAIN = main.c
 
 # Sources 
-SRCS = main.c bd_paciente.c arquivo.c interface_usuario.c
+SRCS = $(wildcard $(SRC_DIR)/*.c)
 
-# Objetos
-OBJ = $(SRCS:.c=.o)
+# Objetos (usando patsubst para substituir corretamente o caminho dos arquivos .c para .o)
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
-# Dependências comuns (arquivos de header)
-DEPS = arquivo.h bd_paciente.h interface_usuario.h
+# Explicit compile target (produces the target program)
+compile: $(TARGET)
 
-# Alvo padrão
-all: sistema
+# Run the executable
+run: $(TARGET)
+	./$(TARGET)
 
-# Ligação final dos objetos para gerar o executável
-sistema: $(OBJ)
-	$(CC) $(CFLAGS) -o sistema $(OBJ)
+# Default target (compile and run)
+all: compile run
 
-# Regra genérica para compilar arquivos .c em .o
-%.o: %.c $(DEPS)
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-# Limpar arquivos objeto e o executável
+# Clean up
 clean:
-	del /Q *.o sistema.exe
+	rm -f $(OBJS) $(TARGET)
 
-# Executa o programa (target opcional)
-run: sistema
-	./sistema
+# Phony targets
+.PHONY: all compile run clean
+
+# Compile source files in the source directory into object files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+	
+# Rule to link object files and create the executable (target)
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)

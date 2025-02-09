@@ -13,8 +13,10 @@ Através do menu do sistema, é possível realizar as seguintes operações:
 
 Caso alguma operação realizada modifique o banco de dados, todos os dados inseridos/modificados são salvos automaticamente no arquivo CSV, bem como os a lista é atualizada caso haja a exclusão dos dados de algum paciente.
 
+
 # 2. Requisitos
 Deve-se ter um compilador C, além de um ambiente para execução em sistema Linux/Unix ou Windows (terminal).
+
 
 # 3. Como Executar o Programa
 1. Todos os arquivos fonte devem estar na mesma pasta: main.c, arquivo.c, interface_usuario.c, bd_paciente.c, arquivo.h, interface_usuario.h, bd_paciente.h.
